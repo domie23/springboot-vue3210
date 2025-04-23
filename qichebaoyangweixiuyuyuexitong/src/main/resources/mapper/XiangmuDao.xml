@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.XiangmuDao">
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.xiangmu_uuid_number as xiangmuUuidNumber
+        ,a.xiangmu_name as xiangmuName
+        ,a.xiangmu_photo as xiangmuPhoto
+        ,a.xiangmu_types as xiangmuTypes
+        ,a.xiangmu_old_money as xiangmuOldMoney
+        ,a.xiangmu_new_money as xiangmuNewMoney
+        ,a.xiangmu_clicknum as xiangmuClicknum
+        ,a.xiangmu_content as xiangmuContent
+        ,a.shangxia_types as shangxiaTypes
+        ,a.xiangmu_delete as xiangmuDelete
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.XiangmuView" >
+        SELECT
+        <include refid="Base_Column_List" />
+
+--         级联表的字段
+
+        FROM xiangmu  a
+
+        <where>
+            <if test="params.ids != null">
+                and a.id in
+                <foreach item="item" index="index" collection="params.ids" open="(" separator="," close=")">
+                #{item}
+                </foreach>
+            </if>
+            <if test=" params.xiangmuUuidNumber != '' and params.xiangmuUuidNumber != null and params.xiangmuUuidNumber != 'null' ">
+                and a.xiangmu_uuid_number like CONCAT('%',#{params.xiangmuUuidNumber},'%')
+            </if>
+            <if test=" params.xiangmuName != '' and params.xiangmuName != null and params.xiangmuName != 'null' ">
+                and a.xiangmu_name like CONCAT('%',#{params.xiangmuName},'%')
+            </if>
+            <if test="params.xiangmuTypes != null and params.xiangmuTypes != ''">
+                and a.xiangmu_types = #{params.xiangmuTypes}
+            </if>
+            <if test="params.xiangmuOldMoneyStart != null ">
+                <![CDATA[  and a.xiangmu_old_money >= #{params.xiangmuOldMoneyStart}   ]]>
+            </if>
+            <if test="params.xiangmuOldMoneyEnd != null ">
+                <![CDATA[  and a.xiangmu_old_money <= #{params.xiangmuOldMoneyEnd}   ]]>
+            </if>
+            <if test="params.xiangmuNewMoneyStart != null ">
+                <![CDATA[  and a.xiangmu_new_money >= #{params.xiangmuNewMoneyStart}   ]]>
+            </if>
+            <if test="params.xiangmuNewMoneyEnd != null ">
+                <![CDATA[  and a.xiangmu_new_money <= #{params.xiangmuNewMoneyEnd}   ]]>
+            </if>
+            <if test="params.xiangmuClicknumStart != null and params.xiangmuClicknumStart != ''">
+                <![CDATA[  and a.xiangmu_clicknum >= #{params.xiangmuClicknumStart}   ]]>
+            </if>
+            <if test="params.xiangmuClicknumEnd != null and params.xiangmuClicknumEnd != ''">
+                <![CDATA[  and a.xiangmu_clicknum <= #{params.xiangmuClicknumEnd}   ]]>
+            </if>
+             <if test="params.xiangmuClicknum != null and params.xiangmuClicknum != ''">
+                and a.xiangmu_clicknum = #{params.xiangmuClicknum}
+             </if>
+            <if test=" params.xiangmuContent != '' and params.xiangmuContent != null and params.xiangmuContent != 'null' ">
+                and a.xiangmu_content like CONCAT('%',#{params.xiangmuContent},'%')
+            </if>
+            <if test="params.shangxiaTypes != null and params.shangxiaTypes != ''">
+                and a.shangxia_types = #{params.shangxiaTypes}
+            </if>
+            <if test="params.xiangmuDeleteStart != null and params.xiangmuDeleteStart != ''">
+                <![CDATA[  and a.xiangmu_delete >= #{params.xiangmuDeleteStart}   ]]>
+            </if>
+            <if test="params.xiangmuDeleteEnd != null and params.xiangmuDeleteEnd != ''">
+                <![CDATA[  and a.xiangmu_delete <= #{params.xiangmuDeleteEnd}   ]]>
+            </if>
+             <if test="params.xiangmuDelete != null and params.xiangmuDelete != ''">
+                and a.xiangmu_delete = #{params.xiangmuDelete}
+             </if>
+
+        </where>
+
+        order by a.${params.orderBy} desc 
+    </select>
+
+</mapper>
